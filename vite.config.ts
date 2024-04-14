@@ -10,6 +10,7 @@ export default defineConfig({
     topLevelAwait(),
     svelte()
   ],
+  base: '/8mbify',
   worker: {
     format: 'es',
   },
