@@ -1,6 +1,6 @@
 import { getStdout, stdoutFile } from './libav-helpers';
 import LibAV, { type Packet, type Stream } from './libav';
-import { audioStreamToConfig, packetToEncodedAudioChunk, packetToEncodedVideoChunk, videoStreamToConfig } from './libavjs-webcodecs-bridge/bridge';
+import { audioStreamToConfig, packetToEncodedAudioChunk, packetToEncodedVideoChunk, videoStreamToConfig } from '../libavjs-webcodecs-bridge/bridge';
 
 export async function sampleDemux(file: File, readOpts?: {
     // OUTPUT limit, in bytes

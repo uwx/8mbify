@@ -24,10 +24,10 @@
  */
 
 import LibAV, { type LibAV as LibAVType, type Packet, type Stream, type LibAVSync } from './libav';
-import { packetToEncodedVideoChunk, packetToEncodedAudioChunk } from './libavjs-webcodecs-bridge/bridge';
+import { packetToEncodedVideoChunk, packetToEncodedAudioChunk } from '../libavjs-webcodecs-bridge/bridge';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
 import { expose } from 'comlink';
-import { exposeAsync } from './comlink-async';
+import { exposeAsync } from '../comlink-async';
 
 import { sampleDemux } from './worker-util';
 

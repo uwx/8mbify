@@ -1,6 +1,6 @@
 <script lang="ts">
     import { wrap, type Remote } from "comlink";
-    import { type Api } from "./worker2";
+    import { type Api } from "./worker/worker";
     import humanizeDuration from "humanize-duration";
     import { wrapAsync } from "./comlink-async";
     import { Button, Container, Input, Label } from "@sveltestrap/sveltestrap";
@@ -55,8 +55,8 @@
 
         console.log("no bitches?");
 
-        worker = await wrapAsync<Api>(
-            new Worker(new URL("./worker2.ts", import.meta.url), {
+        worker ??= await wrapAsync<Api>(
+            new Worker(new URL("./worker.ts", import.meta.url), {
                 type: "module",
             }),
         );
