@@ -23,6 +23,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+globalThis._scriptDir = undefined;
+
 import LibAV, { type LibAV as LibAVType, type Packet, type Stream, type LibAVSync } from './libav';
 import { packetToEncodedVideoChunk, packetToEncodedAudioChunk } from '../libavjs-webcodecs-bridge/bridge';
 import { Muxer, ArrayBufferTarget } from 'mp4-muxer';
@@ -38,9 +40,10 @@ let configs: (AudioDecoderConfig | VideoDecoderConfig | null)[];
 let allPackets: Record<number, Packet[]>;
 
 export class Api {
-    async start(file: File) {
+    async start(file: File, progressCallback: (step: string) => void) {
         // Demux the file
         console.log('demuxing file');
+        progressCallback('Demuxing file...');
 
         let frameRate: number;
 
@@ -50,6 +53,7 @@ export class Api {
 
         // Prepare for transcoding
         console.log('Prepare for transcoding');
+        progressCallback('Prepare for transcoding');
 
         const durationSeconds = Math.max(...streams.map(e => e.duration));
         return {
@@ -95,6 +99,7 @@ export class Api {
         widthOverride?: number,
         heightOverride?: number,
         framerateOverride?: number,
+        progressCallback?: (step: string) => void,
     ) {
         let outStreams: {
             inIdx: number;
@@ -107,6 +112,26 @@ export class Api {
         let decoders: (AudioDecoder | VideoDecoder)[] = [];
 
         let muxer: Muxer<ArrayBufferTarget>;
+
+        let queuedVideoFrames = 0;
+        let queuedAudioFrames = 0;
+
+        let encodedVideoFrames = 0;
+        let encodedAudioFrames = 0;
+
+        let decodedVideoFrames = 0;
+        let decodedAudioFrames = 0;
+
+        let lastProgress = -1;
+
+        function updateProgress() {
+            const THRESHOLD = 0.05; // over .1%
+            let newProgress = (encodedVideoFrames / queuedVideoFrames) * 100;
+            if (Math.abs(newProgress - lastProgress) >= THRESHOLD) {
+                lastProgress = newProgress;
+                progressCallback?.(`Transcoding approx. ${newProgress.toFixed(2)}% completed (${encodedVideoFrames} out of ${queuedVideoFrames} frames)`);
+            }
+        }
 
         for (let streamIndex = 0; streamIndex < streams.length; streamIndex++) {
             const inStream = streams[streamIndex];
@@ -121,7 +146,12 @@ export class Api {
                 // ENCODING
                 const oi = outStreams.length;
                 const enc = new VideoEncoder({
-                    output: (chunk, meta) => muxer.addVideoChunk(chunk, meta),
+                    output: (chunk, meta) => {
+                        muxer.addVideoChunk(chunk, meta);
+                        encodedVideoFrames++;
+                        updateProgress();
+                        // progressCallback?.(`queuedVideoFrames: ${queuedVideoFrames}, queuedAudioFrames: ${queuedAudioFrames}, encodedVideoFrames: ${encodedVideoFrames}, encodedAudioFrames: ${encodedAudioFrames}, decodedVideoFrames: ${decodedVideoFrames}, decodedAudioFrames: ${decodedAudioFrames}`);
+                    },
                     error: err => console.error(`video encoder ${oi}: ${err.toString()}`)
                 });
                 const config: VideoEncoderConfig = {
@@ -139,6 +169,8 @@ export class Api {
                     output: frame => {
                         enc.encode(frame);
                         frame.close();
+                        decodedVideoFrames++;
+                        // progressCallback?.(`queuedVideoFrames: ${queuedVideoFrames}, queuedAudioFrames: ${queuedAudioFrames}, encodedVideoFrames: ${encodedVideoFrames}, encodedAudioFrames: ${encodedAudioFrames}, decodedVideoFrames: ${decodedVideoFrames}, decodedAudioFrames: ${decodedAudioFrames}`);
                     },
                     error: err => console.error(`video decoder ${oi}: ${err.toString()}`)
                 });
@@ -159,7 +191,11 @@ export class Api {
                 // ENCODING
                 const oi = outStreams.length;
                 const enc = new AudioEncoder({
-                    output: (chunk, meta) => muxer.addAudioChunk(chunk, meta),
+                    output: (chunk, meta) => {
+                        muxer.addAudioChunk(chunk, meta);
+                        encodedAudioFrames++;
+                        // progressCallback?.(`queuedVideoFrames: ${queuedVideoFrames}, queuedAudioFrames: ${queuedAudioFrames}, encodedVideoFrames: ${encodedVideoFrames}, encodedAudioFrames: ${encodedAudioFrames}, decodedVideoFrames: ${decodedVideoFrames}, decodedAudioFrames: ${decodedAudioFrames}`);
+                    },
                     error: err => console.error(`audio encoder ${oi}: ${err.toString()}`)
                 });
                 const config: AudioEncoderConfig = {
@@ -175,6 +211,8 @@ export class Api {
                     output: frame => {
                         enc.encode(frame);
                         frame.close();
+                        decodedAudioFrames++;
+                        // progressCallback?.(`queuedVideoFrames: ${queuedVideoFrames}, queuedAudioFrames: ${queuedAudioFrames}, encodedVideoFrames: ${encodedVideoFrames}, encodedAudioFrames: ${encodedAudioFrames}, decodedVideoFrames: ${decodedVideoFrames}, decodedAudioFrames: ${decodedAudioFrames}`);
                     },
                     error: err => console.error(`audio decoder ${oi}: ${err.toString()}`)
                 });
@@ -194,6 +232,7 @@ export class Api {
 
         // Prepare for muxing
         console.log('Prepare for muxing');
+        progressCallback?.('Initiating transcode...');
         muxer = new Muxer({
             target: new ArrayBufferTarget(),
             video: {
@@ -217,8 +256,10 @@ export class Api {
 
             const inStream = streams[packet.stream_index!];
             if (inStream.codec_type === LibAV.AVMEDIA_TYPE_VIDEO /* video */) {
+                queuedVideoFrames++;
                 dec.decode(packetToEncodedVideoChunk(packet, inStream));
             } else if (inStream.codec_type === LibAV.AVMEDIA_TYPE_AUDIO /* audio */) {
+                queuedAudioFrames++;
                 dec.decode(packetToEncodedAudioChunk(packet, inStream));
             }
         }
@@ -234,6 +275,8 @@ export class Api {
         muxer.finalize();
 
         const { buffer } = muxer.target;
+
+        progressCallback?.('Transcode complete');
 
         return buffer;
     }

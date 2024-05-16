@@ -21,7 +21,7 @@
  * WebCodecs data to libav.js's formats and muxing.
  */
 
-import type * as LibAVJS from "@libav.js/variant-webcodecs";
+import type * as LibAVJS from "@uwx/libav.js-all";
 declare let LibAV : LibAVJS.LibAVWrapper;
 declare let LibAVWebCodecs : any;
 declare let EncodedAudioChunk : any;

@@ -13,11 +13,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@libav.js/variant-webcodecs": "^5.1.6",
     "@sveltestrap/sveltestrap": "^6.2.7",
+    "@uwx/libav.js-all": "6.0.0-nightly.25.942e7c.ffmpeg.6.1.1",
     "comlink": "^4.4.1",
     "humanize-duration": "^3.32.0",
-    "libav.js": "^5.1.6",
     "libavjs-webcodecs-bridge": "^0.1.0",
     "libavjs-webcodecs-polyfill": "^0.5.1",
     "mp4-muxer": "^4.0.1",

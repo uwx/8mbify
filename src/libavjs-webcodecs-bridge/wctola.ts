@@ -21,7 +21,7 @@
  * and AudioDatas to libav.js Frames.
  */
 
-import type * as LibAVJS from "@libav.js/variant-webcodecs";
+import type * as LibAVJS from "@uwx/libav.js-all";
 declare let LibAV: any;
 
 /**

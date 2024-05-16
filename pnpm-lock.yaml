@@ -5,21 +5,18 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
-  '@libav.js/variant-webcodecs':
-    specifier: ^5.1.6
-    version: 5.1.6
   '@sveltestrap/sveltestrap':
     specifier: ^6.2.7
     version: 6.2.7(svelte@4.2.14)
+  '@uwx/libav.js-all':
+    specifier: 6.0.0-nightly.25.942e7c.ffmpeg.6.1.1
+    version: 6.0.0-nightly.25.942e7c.ffmpeg.6.1.1
   comlink:
     specifier: ^4.4.1
     version: 4.4.1
   humanize-duration:
     specifier: ^3.32.0
     version: 3.32.0
-  libav.js:
-    specifier: ^5.1.6
-    version: 5.1.6
   libavjs-webcodecs-bridge:
     specifier: ^0.1.0
     version: 0.1.0
@@ -357,10 +354,6 @@ packages:
     resolution: {integrity: sha512-Wst46p51km8gH0ZUmeNrtpRYmdlRHUpN1DQd3GFAyKANi8WVz8c2jHYTf1CVScFaCjQw1iO3ZZdqGDxQPRErTg==}
     dependencies:
       '@lezer/common': 1.2.1
-
-  /@libav.js/variant-webcodecs@5.1.6:
-    resolution: {integrity: sha512-6YxtKhl6PSxy20C9pcK1BCUM00zCPvpNq5v6e6ugx3dHTEx9ZHW5fEQt9LfVjdHKN01wMe4AoaUQ98g7u9nUOQ==}
-    dev: false
 
   /@lmdb/lmdb-darwin-arm64@2.8.5:
     resolution: {integrity: sha512-KPDeVScZgA1oq0CiPBcOa3kHIqU+pTOwRFDIhxvmf8CTNvqdZQYp5cCKW0bUk69VygB2PuTiINFWbY78aR2pQw==}
@@ -1601,6 +1594,10 @@ packages:
     resolution: {integrity: sha512-mHkm6FvepJECMNthFuIgpAEFmPOk71UyXuIxYfjytvFTnSDBIz7jmViO+LfHI/AjrazWije0PnSP3+/NlwzqtA==}
     dev: false
 
+  /@uwx/libav.js-all@6.0.0-nightly.25.942e7c.ffmpeg.6.1.1:
+    resolution: {integrity: sha512-POat2qK0ijXu2UMbAsIRxMx8nxsJ66xk48xkouxpVz5JHDyCBrnWhuAWTz/4IhguPzpMfByZGKzQP9ghX0fPkA==}
+    dev: false
+
   /abortcontroller-polyfill@1.7.5:
     resolution: {integrity: sha512-JMJ5soJWP18htbbxJjG7bG6yuI6pRhgJ0scHHTfkUjf6wjP912xZWvM+A4sJK3gqd9E8fcPbDnOefbA9Th/FIQ==}
 
@@ -2155,10 +2152,6 @@ packages:
     resolution: {integrity: sha512-o+NO+8WrRiQEE4/7nwRJhN1HWpVmJm511pBHUxPLtp0BUISzlBplORYSmTclCnJvQq2tKu/sgl3xVpkc7ZWuQQ==}
     engines: {node: '>=6'}
     dev: true
-
-  /libav.js@5.1.6:
-    resolution: {integrity: sha512-dP2mOAaJiYlc6S60K2US7km5s9svMG0sX4gp7rzx3u9FehX7yI6rRbEMwKm7ceExbrShcXYj7TF53gTHonv6ag==}
-    dev: false
 
   /libavjs-webcodecs-bridge@0.1.0:
     resolution: {integrity: sha512-K9pGvW+k2sGnbaCEuhbLG6ylzKoQyVAA1WxO+qIzaYEeVumosaFeKtMzVAThcIy6VHo11rGVF6IqLfSEEQL7sg==}

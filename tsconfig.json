@@ -17,5 +17,6 @@
     "skipLibCheck": false
   },
   "include": ["src/**/*.ts", "src/**/*.js", "src/**/*.svelte", "src/*.ts"],
-  "references": [{ "path": "./tsconfig.node.json" }]
+  "references": [{ "path": "./tsconfig.node.json" }],
+  "exclude": ["node_modules", "src/libav.js/**"]
 }

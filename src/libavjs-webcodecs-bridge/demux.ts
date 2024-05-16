@@ -21,7 +21,7 @@
  * then converting everything to WebCodecs for decoding.
  */
 
-import type * as LibAVJS from "@libav.js/variant-webcodecs";
+import type * as LibAVJS from "@uwx/libav.js-all";
 declare let LibAV : LibAVJS.LibAVWrapper;
 declare let LibAVWebCodecs : any;
 declare let EncodedAudioChunk : any;
