@@ -46,8 +46,9 @@ export class Api {
         progressCallback('Demuxing file...');
 
         let frameRate: number;
+        let formatDuration: number;
 
-        ({streams, configs, packets: allPackets, frameRate} = await sampleDemux(file, {unify: true}));
+        ({streams, configs, packets: allPackets, frameRate, formatDuration} = await sampleDemux(file, {unify: true}));
 
         console.log({streams, configs, allPackets, frameRate});
 
@@ -55,7 +56,9 @@ export class Api {
         console.log('Prepare for transcoding');
         progressCallback('Prepare for transcoding');
 
-        const durationSeconds = Math.max(...streams.map(e => e.duration));
+        const DURATION_NA = -9223372036854776;
+
+        const durationSeconds = Math.max(...streams.map(stream => stream.duration !== DURATION_NA ? stream.duration : formatDuration));
         return {
             durationSeconds,
             frameRate,
@@ -68,7 +71,7 @@ export class Api {
                     const config = configs[streamIndex] as VideoDecoderConfig;
 
                     yield {
-                        duration: stream.duration,
+                        duration: stream.duration !== DURATION_NA ? stream.duration : formatDuration,
                         framerate: 1/((stream.time_base_num/stream.time_base_den)*1000),
                         width: config.codedWidth!,
                         height: config.codedHeight!,
@@ -84,7 +87,7 @@ export class Api {
                     const config = configs[streamIndex] as AudioDecoderConfig;
 
                     yield {
-                        duration: stream.duration,
+                        duration: stream.duration !== DURATION_NA ? stream.duration : formatDuration,
                         sampleRate: config.sampleRate,
                         numberOfChannels: config.numberOfChannels,
                     };

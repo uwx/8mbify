@@ -15,3 +15,5 @@ LibAV.factory = (async () => {
     return (await import(`@uwx/libav.js-all/factory/all.wasm`)).default;
 })();
 LibAV.wasmurl = (await import(`@uwx/libav.js-all/backend/all.wasm?url`)).default;
+
+export type LibAVInstance = Awaited<ReturnType<typeof LibAV['LibAV']>>;

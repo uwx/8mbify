@@ -1,4 +1,4 @@
-import { getStdout, stdoutFile } from './libav-helpers';
+import { getStdout, restoreStdout, stdoutFile } from './libav-helpers';
 import LibAV, { type Packet, type Stream } from './libav';
 import { audioStreamToConfig, packetToEncodedAudioChunk, packetToEncodedVideoChunk, videoStreamToConfig } from '../libavjs-webcodecs-bridge/bridge';
 
@@ -9,17 +9,19 @@ export async function sampleDemux(file: File, readOpts?: {
     unify?: boolean,
     // Version of ff_copyout_packet to use
     copyoutPacket?: "default"
-}): Promise<{streams: Stream[], configs: (AudioDecoderConfig | VideoDecoderConfig | null)[], packets: Record<number, Packet[]>, frameRate: number}> {
+}): Promise<{streams: Stream[], configs: (AudioDecoderConfig | VideoDecoderConfig | null)[], packets: Record<number, Packet[]>, frameRate: number, formatDuration: number}> {
     /* NOTE: noworker is not mandatory (this is in a worker, so it's fine)! */
     const libav = await LibAV.LibAV({noworker: true});
     await libav.mkreadaheadfile("input", file);
 
     // calcualte framerate
     await stdoutFile(libav);
-    await libav.ffprobe('-v', '0', '-of', 'compact=p=0', '-select_streams', '0', '-show_entries', 'stream=r_frame_rate', 'input');
+    await libav.ffprobe('-v', '0', '-of', 'compact=p=0', '-select_streams', '0', '-show_entries', 'stream=r_frame_rate:format=duration', 'input');
+    await restoreStdout(libav);
     const stdout = await getStdout(libav);
-    const [, a, b] = stdout.match(/r_frame_rate=(\d+)\/(\d+)/) ?? [, 0, 0];
-    const frameRate = +a / +b;
+    const [, frame_num, frame_den] = stdout.match(/r_frame_rate=(\d+)\/(\d+)/) ?? [, 0, 0];
+    const frameRate = +frame_num / +frame_den;
+    const [, duration] = stdout.match(/duration=([0-9\.]+)/) ?? [, '0'];
 
     const [fmt_ctx, streams] = await libav.ff_init_demuxer_file("input");
 
@@ -37,7 +39,7 @@ export async function sampleDemux(file: File, readOpts?: {
 
     libav.terminate();
 
-    return {streams, configs, packets, frameRate};
+    return {streams, configs, packets, frameRate, formatDuration: parseFloat(duration)};
 }
 
 export async function sampleMux(filename: string, codec: string, packets: (EncodedAudioChunk | EncodedVideoChunk | EncodedVideoChunk)[], extradata?: Uint8Array) {
