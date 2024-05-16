@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@sveltestrap/sveltestrap": "^6.2.7",
-    "@uwx/libav.js-all": "6.0.0-nightly.27.611aeb.ffmpeg.6.1.1",
+    "@uwx/libav.js-all": "6.0.0-nightly.29.f420ff.ffmpeg.6.1.1",
     "comlink": "^4.4.1",
     "humanize-duration": "^3.32.0",
     "libavjs-webcodecs-bridge": "^0.1.0",

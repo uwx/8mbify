@@ -9,8 +9,8 @@ dependencies:
     specifier: ^6.2.7
     version: 6.2.7(svelte@4.2.17)
   '@uwx/libav.js-all':
-    specifier: 6.0.0-nightly.27.611aeb.ffmpeg.6.1.1
-    version: 6.0.0-nightly.27.611aeb.ffmpeg.6.1.1
+    specifier: 6.0.0-nightly.29.f420ff.ffmpeg.6.1.1
+    version: 6.0.0-nightly.29.f420ff.ffmpeg.6.1.1
   comlink:
     specifier: ^4.4.1
     version: 4.4.1
@@ -1602,8 +1602,8 @@ packages:
     resolution: {integrity: sha512-mHkm6FvepJECMNthFuIgpAEFmPOk71UyXuIxYfjytvFTnSDBIz7jmViO+LfHI/AjrazWije0PnSP3+/NlwzqtA==}
     dev: false
 
-  /@uwx/libav.js-all@6.0.0-nightly.27.611aeb.ffmpeg.6.1.1:
-    resolution: {integrity: sha512-Li/4tsnqVEgSBgNgUnNGoFJXK+96kOvbS5QvjIjFDUyoEiPySdGkHpa01YmoIns+8fmn6Ek4aVJxKO05er2pmQ==}
+  /@uwx/libav.js-all@6.0.0-nightly.29.f420ff.ffmpeg.6.1.1:
+    resolution: {integrity: sha512-Izqb1Ono4PUK7zi3jKk0MrEXQ/JnJwhuT20C5S/qktt43f1qh+nz7KJTvx7MZBzscE/XXcduQXdHs5veLpzU1A==}
     dev: false
 
   /abortcontroller-polyfill@1.7.5:
